@@ -2,26 +2,38 @@ import Taro from '@tarojs/taro'
 import {AtInput} from 'taro-ui'
 import './unit.scss'
 class Unit extends Taro.Component{
-    constructor(){
-        super()
-        this.state={
-            number:'',
-        }
-        
+    constructor(props){
+        super(props)  
     }
+    onClick(){
+        // console.log("props",this.props)
+        const{position}=this.props
+        let x=position[0]
+        let y=position[1]
+        this.props.onClickhandle(x,y)
+        console.log("pos",position)
+    }
+    onChangeValue(value){
+        // this.setState({
+        //     number:value,
+        // })
 
-    render(){
-        return <div className={'unit'}>
-            <AtInput type='number' value={this.state.number} onChange={this.onchangeValue.bind(this)}/>
-            <h1>{this.state.number}</h1>
-        </div>
-    }
-    onchangeValue(value){
-        this.setState({
-            number:value
-        })
         return value
-        console.log(this.state.number)
     }
+    render(){
+        const{val,position,concentrate}=this.props
+        console.log(val,position,concentrate)
+        return <View className={'unit'}>
+            <AtInput type='number' 
+            value={val} 
+            autoFocus={false}
+            onChange={this.onChangeValue.bind(this)}
+            onFocus={this.onClick.bind(this)}
+            focus={concentrate}/>
+            <h1>{position}</h1>
+            <h1>{concentrate}</h1>
+        </View>
+    }
+    
 }
 export default Unit

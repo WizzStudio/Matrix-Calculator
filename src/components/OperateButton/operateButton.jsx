@@ -4,8 +4,10 @@
   // onSum(){}
   // onMinus(){}
   // onCrossMulti(){ }
-onAddLine=()=>{
-  this
+export function onAddLine(){
+  this.props.line++;
+  console.log(this.state.line)
 }
+
   // onAddRow(){}
   // onDelete(){}
