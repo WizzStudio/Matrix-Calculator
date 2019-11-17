@@ -57,10 +57,10 @@ export default class Index extends Component {
   onAddRow(){
     let {matrix,line,row} = this.state
     for(let i=0;i<line;i++){
-      matrix[i].push('')
-      console.log("箭头line",i,'push a',matrix[i])
-      console.log("row++",++row)
+      matrix[i].push('')   
     }
+    console.log("row++",++row)
+    console.log("扩列matrix",matrix)
     this.setState({
       row,
       matrix
@@ -70,11 +70,10 @@ export default class Index extends Component {
   onAddLine(){
     let {matrix,row,line}=this.state
     let array=new Array(row).fill('')
-    
-    console.log("arr",array)
     matrix.push(array)
     console.log("回车matrix",matrix)
     console.log("line++",++line)
+
     this.setState({
       line,
       matrix
@@ -86,29 +85,35 @@ export default class Index extends Component {
       matrix:nums,
       inputNum:''
     })
+    console.log("按非数字键matrix",nums)
   }
   onKeepInput(value){
     let{inputNum,matrix,focuson}=this.state
     inputNum+=value
     matrix[focuson[0]][focuson[1]]=inputNum
+    console.log('按数字键更新matrix',matrix)
     this.setState({
       inputNum,
       matrix
-    }),function(){
-      console.log("inputNum",inputNum)
-    }
+    })
   }
   onBackspace(){
-    let {inputNum}=this.state
+    let {focuson,inputNum,matrix}=this.state
     let l=inputNum.length
     let newinput=inputNum.substring(0,l-1)
+    if(l<=0){ 
+      newinput=''
+    }
+    matrix[focuson[0]][focuson[1]]=newinput
     this.setState({
-      inputNum:newinput
+      inputNum:newinput,
+      matrix
     })
   }
   onFocushandle(x,y){
     let {inputNum,matrix,focuson}=this.state
     if(x==focuson[0]&&y==focuson[1]){
+      console.log("点击矩阵中某值",matrix[x][y],inputNum)
         this.setState({
           inputNum:matrix[x][y]
         })
@@ -117,23 +122,12 @@ export default class Index extends Component {
       matrix[focuson[0]][focuson[1]]=inputNum
       this.setState({
         matrix,
-        inputNum:'',
+        inputNum:matrix[x][y],
         focuson:[x,y]
       })
     }
   }
-  onUnchangeInput(x,y){
-    let {inputNum}=this.state
-    matrix[x][y]=inputNum
-    this.setState({
-      matrix,
-    })
-  }
-  onChangefocus(x,y){
-    this.setState({
-      focuson:[x,y]
-    })
-  }
+  
   handleClick = (item,index) => {
     // console.log(item.value,index);
     switch(index){
@@ -146,8 +140,8 @@ export default class Index extends Component {
       case 6:this.onStopInput();break;
       case 7:this.onBackspace();break;
 
-      case 15:this.onAddLine();break;
-      case 11:this.onAddRow();break;
+      case 15:this.onAddRow();break;
+      case 11:this.onAddLine();break;
       case 8:
       case 9:
       case 10:
