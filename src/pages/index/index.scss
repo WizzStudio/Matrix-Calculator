@@ -1,13 +1,23 @@
+.index{
+    top:0;
+    bottom: 0;
+    position: relative;
+}
 .grid{
-    margin-bottom: 0px;
+    bottom: 0;
+    // position: absolute;
 }
-.unit{
-    height: 100px;
-    width:100px;
+.function{
+    display: flex;
 }
-.row{
-    flex-direction: row;
-}
-.column{
+.function addfunction{
     flex-direction: column;
+}
+.addfunction Matrix{
+    display: inline-block;
+    vertical-align: middle;
+}   
+.addfunction opertext{
+    display: inline-block;
+    vertical-align: middle;
 }
