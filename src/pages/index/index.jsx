@@ -9,6 +9,15 @@ import Result from '../../components/Result/result'
 export default class Index extends Component {
   constructor(){
     super()
+    this.onClear=this.onClear.bind(this)
+    this.onFocushandle=this.onFocushandle.bind(this)
+    this.onKeepInput=this.onKeepInput.bind(this)
+    this.onOperate=this.onOperate.bind(this)
+    this.onAddLine=this.onAddLine.bind(this)
+    this.onAddMatrix=this.onAddMatrix.bind(this)
+    this.onAddRow=this.onAddRow.bind(this)
+    this.onBackspace=this.onBackspace.bind(this)
+    this.onCalculate=this.onCalculate.bind(this)
     this.state={
       line:1,
       row:1,
@@ -74,14 +83,12 @@ export default class Index extends Component {
       matrix,
       inputNum:''
     })
-    console.log("按非数字键matrix")
   }
 
   onKeepInput(value){
     let{inputNum,matrix,focuson}=this.state
     inputNum+=value
     matrix[focuson[0]][focuson[1]][focuson[2]]=inputNum
-    console.log('按数字键更新matrix',inputNum)
     this.setState({
       inputNum,
       matrix
@@ -144,24 +151,18 @@ export default class Index extends Component {
     let{isResult,isOperate,matrix,line}=this.state
     isResult[0]++
     let op=isOperate[isResult[0]]
-    console.log("oper",op)
-    console.log("resul",isResult[0])
     let re
-    console.log("ma",matrix);
     
     switch(op){
       case 'A-1':re=inv(matrix[isResult[0]-1]);break;
       case '行最简':let array=JSON.parse(JSON.stringify(matrix[isResult[0]-1]))
-                    console.log("aaray",array)
                     let ar=new Array(line).fill(0);re=rref(array,ar,line);break;
       case '+':re=add(matrix[isResult[0]],matrix[isResult[0]-1]);break;
       case '-':re=subtract(matrix[isResult[0]-1],matrix[isResult[0]]);break;
       case 'det':re=det(matrix[isResult[0]-1]);let arr=[];arr[0]=[];arr[0].push(re);re=arr;break;
       case '×':re=multiply(transpose(matrix[isResult[0]-1]),transpose(matrix[isResult[0]]));break;
     }
-    console.log(re)
     isResult[1].push(re)
-    console.log("isRe",isResult[1][1])
     this.setState({
       isResult:isResult,
     })  
@@ -175,8 +176,7 @@ export default class Index extends Component {
       <View className='index'>
         <View className="operate">
           <View className="function at-row at-row__justify--end">
-          {isOperate.map((val,index)=>{
-            return(
+          {isOperate.map((val,index)=>(
                 <View className="addfunction">
                 <h1 className="opertext">{val}</h1>
                 {val!='det'&&val!='A-1'&&val!='行最简'&&<Matrix className="Matrix"
@@ -186,9 +186,8 @@ export default class Index extends Component {
                   onFocushandle={this.onFocushandle.bind(this)}
                 ></Matrix>}
                 </View>
-                )     
-              })
-            }{isResult[0]!=0&&<h1>=</h1>}
+                ))
+            }{isResult[0]!=0&&<h1 className="equal">=</h1>}
           </View> 
 
           <View className="result at-row at-row__justify--end">
@@ -202,14 +201,14 @@ export default class Index extends Component {
               line={line}
               row={row}
               hasResult={isResult[isResult[0]]}
-              onClear={this.onClear.bind(this)}
-              onAddRow={this.onAddRow.bind(this)}
-              onAddLine={this.onAddLine.bind(this)}
-              onAddMatrix={this.onAddMatrix.bind(this)}
-              onBackspace={this.onBackspace.bind(this)}
-              onCalculate={this.onCalculate.bind(this)}
-              onKeepInput={this.onKeepInput.bind(this)}
-              onOperate={this.onOperate.bind(this)}
+              onClear={this.onClear}
+              onAddRow={this.onAddRow}
+              onAddLine={this.onAddLine}
+              onAddMatrix={this.onAddMatrix}
+              onBackspace={this.onBackspace}
+              onCalculate={this.onCalculate}
+              onKeepInput={this.onKeepInput}
+              onOperate={this.onOperate}
               ></KeyBoard>
           </View> 
 

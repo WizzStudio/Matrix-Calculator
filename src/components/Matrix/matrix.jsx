@@ -27,8 +27,7 @@ export default class Matrix extends Component {
     return (
       <View className='mx'>
         {
-          matrix.map((value,x)=>{
-          return(
+          matrix.map((value,x)=>(
               <View className='row'>
                 {
                   value.map((v,y)=>{ 
@@ -48,7 +47,7 @@ export default class Matrix extends Component {
                 }
               </View>
             )
-          })
+          )
         }
       </View>)
   }

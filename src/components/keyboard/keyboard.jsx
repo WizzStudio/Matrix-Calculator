@@ -1,5 +1,4 @@
 import Taro, { Component } from '@tarojs/taro'
-import { View, Text } from '@tarojs/components'
 import {AtGrid} from 'taro-ui'
 export default class KeyBoard extends Component{
     constructor(props){
@@ -65,7 +64,7 @@ export default class KeyBoard extends Component{
           case 19:this.props.onKeepInput(item.value[2]);break;
           case 23:this.props.onCalculate();break;
         }
-        let {onClear,hasResult}=this.props
+        let {hasResult}=this.props
         if(hasResult!=''){
             this.props.onClear()
         }

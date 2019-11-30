@@ -10,15 +10,23 @@
 }
 .function{
     display: flex;
+    align-items: center;
 }
 .function addfunction{
     flex-direction: column;
 }
-.addfunction Matrix{
+.function equal{
+    flex-direction: column;
+}
+.addfunction Matrix {
     display: inline-block;
     vertical-align: middle;
 }   
 .addfunction opertext{
     display: inline-block;
     vertical-align: middle;
+}
+
+Result{
+    margin-right: 4%;
 }
