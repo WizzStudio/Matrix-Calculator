@@ -30,7 +30,6 @@ class Unit extends Taro.Component{
             onChange={this.onChangeValue.bind(this)}
             onFocus={this.onClick.bind(this)}
             focus={concentrate}/>
-            <h1>{concentrate}</h1>
         </View>
     }
     

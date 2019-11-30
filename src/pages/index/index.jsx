@@ -4,7 +4,7 @@ import './index.scss'
 import {AtGrid} from 'taro-ui'
 import Matrix from '../../components/Matrix/matrix'
 import KeyBoard from '../../components/keyboard/keyboard'
-import {add,multiply, det,subtract,transpose,inv,dot} from '../../components/operate'
+import {add,multiply, det,subtract,transpose,inv,rref} from '../../components/operate'
 import Result from '../../components/Result/result'
 export default class Index extends Component {
   constructor(){
@@ -111,7 +111,7 @@ export default class Index extends Component {
       inputNum:'',
       focuson:[0,0,0],
       isOperate:[''],
-      isResult:[0,''],
+      isResult:[0,['']],
     })
   }
   onFocushandle(i,x,y){
@@ -139,8 +139,9 @@ export default class Index extends Component {
     })
   }
 
+  
   onCalculate(){
-    let{isResult,isOperate,matrix}=this.state
+    let{isResult,isOperate,matrix,line}=this.state
     isResult[0]++
     let op=isOperate[isResult[0]]
     console.log("oper",op)
@@ -150,21 +151,17 @@ export default class Index extends Component {
     
     switch(op){
       case 'A-1':re=inv(matrix[isResult[0]-1]);break;
-
+      case '行最简':let array=JSON.parse(JSON.stringify(matrix[isResult[0]-1]))
+                    console.log("aaray",array)
+                    let ar=new Array(line).fill(0);re=rref(array,ar,line);break;
       case '+':re=add(matrix[isResult[0]],matrix[isResult[0]-1]);break;
       case '-':re=subtract(matrix[isResult[0]-1],matrix[isResult[0]]);break;
-      case 'det':re=det(matrix[isResult[0]-1]);break;
-      case 'x':re=multiply(matrix[isResult[0]-1],matrix[isResult[0]]);break;
+      case 'det':re=det(matrix[isResult[0]-1]);let arr=[];arr[0]=[];arr[0].push(re);re=arr;break;
+      case '×':re=multiply(transpose(matrix[isResult[0]-1]),transpose(matrix[isResult[0]]));break;
     }
-    if (re){
-      let arr=[]
-      arr[0]=[]
-      arr[0].push(re)
-      re=arr
-      console.log(arr)
-    }
-    isResult[1][isResult[0]-1]=re
-    console.log("isRe",isResult[1][0])
+    console.log(re)
+    isResult[1].push(re)
+    console.log("isRe",isResult[1][1])
     this.setState({
       isResult:isResult,
     })  
@@ -174,20 +171,15 @@ export default class Index extends Component {
   
   render () {
     const {onMatrix,inputNum,matrix,focuson,isOperate,isResult,line,row}=this.state
-    console.log(isResult[1][0])
     return (
       <View className='index'>
-      <h1>{onMatrix}</h1>
-      <br></br>
-  `   <h1>{inputNum}</h1>
-      <h1>{focuson}</h1>
         <View className="operate">
-          <View className="function">
+          <View className="function at-row at-row__justify--end">
           {isOperate.map((val,index)=>{
             return(
                 <View className="addfunction">
                 <h1 className="opertext">{val}</h1>
-                {val!='det'&&val!='A-1'&&<Matrix className="Matrix"
+                {val!='det'&&val!='A-1'&&val!='行最简'&&<Matrix className="Matrix"
                   posMatrix={index}
                   matrix={matrix[index]}
                   inputNum={inputNum}
@@ -197,10 +189,15 @@ export default class Index extends Component {
                 )     
               })
             }{isResult[0]!=0&&<h1>=</h1>}
-          </View>   
-          
-          {isResult[0]!=0&&<Result matrix={isResult[1][0]}></Result>}
-          <View className="grid">
+          </View> 
+
+          <View className="result at-row at-row__justify--end">
+          {isResult[0]!=0&&<Result matrix={isResult[1][isResult[0]]}></Result>}
+          </View>
+      </View>    
+      
+
+          <View className="at-col-12">
             <KeyBoard
               line={line}
               row={row}
@@ -216,7 +213,7 @@ export default class Index extends Component {
               ></KeyBoard>
           </View> 
 
-        </View>
+       
       </View>
     )
   }
