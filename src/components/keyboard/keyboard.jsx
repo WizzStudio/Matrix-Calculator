@@ -3,6 +3,7 @@ import {AtGrid} from 'taro-ui'
 export default class KeyBoard extends Component{
     constructor(props){
         super(props);
+        this.handleClick=this.handleClick.bind(this)
         this.state = {
             data: [
                 {value:'AC'},
@@ -33,15 +34,14 @@ export default class KeyBoard extends Component{
         }
     }
 
-    handleClick = (item,index) => {
+    handleClick(item,index){
         
         let{line,row}=this.props
-        console.log(line,row);
         switch(index){
           case 0:this.props.onClear();break;
           case 1:
           case 2:
-          case 3:
+          case 3:this.props.onOperate(item.value);break;
           case 4:
           case 5:this.props.onOperate(item.value);this.props.onAddMatrix(line,row);break;
           case 6:this.props.onOperate(item.value);this.props.onAddMatrix(row,line);break;
@@ -62,7 +62,7 @@ export default class KeyBoard extends Component{
           case 20:
           case 22:this.props.onKeepInput(item.value);break;
           case 19:this.props.onKeepInput(item.value[2]);break;
-          case 23:this.props.onCalculate();break;
+          case 23:this.props.onCalculate();this.props.onClickhandle();break;
         }
         let {hasResult}=this.props
         if(hasResult!=''){
@@ -75,7 +75,7 @@ export default class KeyBoard extends Component{
         return(
             <AtGrid
             data={data} 
-            onClick={this.handleClick.bind(this)} 
+            onClick={this.handleClick} 
             mode='rect' 
             hasBorder={true} 
             columnNum={4} 
