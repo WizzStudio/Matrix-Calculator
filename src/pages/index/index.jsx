@@ -54,16 +54,17 @@ export default class Index extends Component {
 
   onAddRow(){
     let {matrix,line,row,onMatrix,focuson} = this.state
-    // if(line>1&&row>1)
-      // this.autoCheck()
-    for(let i=0;i<line;i++){
-      matrix[onMatrix][i].push('')   
+    line=this.checkLine(matrix[onMatrix])
+    row=this.checkRow(matrix[onMatrix])
+    for(let i of matrix[onMatrix]){
+      i.push('')   
     }
-    console.log("row++",++row)
+    console.log("line:",line,"line++",++line)
     console.log("扩列matrix",matrix)
-    focuson=[onMatrix,0,row-1]
+    focuson=[onMatrix,0,line-1]
     this.setState({
       row,
+      line,
       matrix,
       inputNum:'',
       focuson
@@ -73,15 +74,17 @@ export default class Index extends Component {
   onAddLine(){
     let {matrix,row,line,onMatrix,focuson}=this.state
     // 原本想直接用filter删去假值，但考虑到若只有部分为空重新渲染时会产生问题，没想到什么好办法
-    // if(line>1&&row>1)
-      // this.autoCheck()
-    let array=new Array(row).fill('')
+    line=this.checkLine(matrix[onMatrix])
+    row=this.checkRow(matrix[onMatrix])
+    console.log("checkline:",line,"checkrow:",row)
+    let array=new Array(line).fill('')
     matrix[onMatrix].push(array)
     console.log("回车matrix",matrix)
-    console.log("line++",++line)
-    focuson=[onMatrix,line-1,0]
+    console.log("row:",row,"row++",++row)
+    focuson=[onMatrix,row-1,0]
     this.setState({
       line,
+      row,
       matrix,
       inputNum:'',
       focuson
@@ -92,8 +95,8 @@ export default class Index extends Component {
   onAddMatrix(line,row){
     let {matrix,onMatrix,focuson}=this.state
     let array=new Array()
-    for(let i=0;i<line;i++){
-      let arr=new Array(row).fill('')
+    for(let i=0;i<row;i++){
+      let arr=new Array(line).fill('')
       array.push(arr)
     }
     onMatrix++
@@ -113,17 +116,17 @@ export default class Index extends Component {
     let{inputNum,matrix,focuson}=this.state
     inputNum+=value
     matrix[focuson[0]][focuson[1]][focuson[2]]=inputNum
-    setTimeout(() => {
-      this.autoCheck(matrix)
-    },10000)
+    // setTimeout(() => {
+    //   this.autoCheck(matrix)
+    // },10000)
     this.setState({
       inputNum,
       matrix
     })
   }
 
-  autoCheck(matrix){
-    let {line,row,onMatrix}=this.state
+  autoCheck(){
+    let {line,row,onMatrix,matrix}=this.state
     let i,j
     let del;
     for(i=0;i<line;i++){
@@ -158,7 +161,7 @@ export default class Index extends Component {
       for(i of del){
         matrix[onMatrix][j].splice(i,1)
       }
-    row-=del.lengtH
+    row-=del.length
     this.setState({
       matrix:matrix,
       line,
@@ -168,15 +171,77 @@ export default class Index extends Component {
   }
 
   checkMatrix(mx){
-    let i,j,flag=false
-    for(i of mx){
-      for(j of i)
+    for(let i of mx){
+      for(let j of i){
         if(j.length!=0)
-          flag=true
+          return true
+      }
     }
-    return flag
+    return false
   }
-
+  checkRow(){
+    let{line,matrix,onMatrix}=this.state
+    let i,j;
+    let rindex=[];
+    let r=0;
+    let Rows=matrix[onMatrix]
+    let row=matrix[onMatrix].length
+    for(i of Rows){
+      let flag=true
+      for(j of i){
+        if(j.length!=0)
+        { 
+          flag=false;
+          continue;}
+      }
+      // console.log("flagrow:",r,flag)
+      if(flag){
+        row--
+        // console.log("emptyrow:",r)
+        Rows.splice(r,1)
+        rindex.push(r)
+      }
+      r++
+    }
+    matrix[onMatrix]=Rows
+    this.setState({
+      matrix,
+      row
+    })
+    return row
+  }
+  checkLine(){
+    let{row,matrix,onMatrix}=this.state
+    let lindex=[];
+    let Lines=matrix[onMatrix]
+    let line=matrix[onMatrix][0].length
+    for(let i=0;i<Lines[0].length;i++){
+      let count=''
+      let flag=true
+      for(let j=0;j<Lines.length;j++){
+        count+=Lines[j][i]
+      }
+      // console.log("i:",i,"allstr",count)
+      if(count.length!=0){
+        flag=false;
+      }
+      // console.log("flag",i,flag)
+      if(flag){
+        line--;
+        console.log("emptyrow:",i)
+        for(let j=0;j<Lines.length;j++){
+         Lines[j].splice(i,1)
+        }
+        lindex.push(i)
+      }
+    }
+    matrix[onMatrix]=Lines
+    this.setState({
+      line,
+      matrix
+    })
+    return line;
+  }
   onBackspace(){
     let {onMatrix,focuson,inputNum,matrix,isOperate,isonOperate}=this.state
     let flag=this.checkMatrix(matrix[onMatrix])
